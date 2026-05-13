@@ -7,11 +7,86 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum Type {
+  RECEIPT
+  SALE
+  TRANSFER
+  WRITEOFF
+  INVENTORY_CHECK
+}
+
+enum Status {
+  DRAFT
+  COMPLETED
+  CANCELLED
+}
+
 model User {
   id String @id @default(cuid())
   email String @unique
   password String
-  role String @default("ADMIN")
+  role Role @default(USER)
   refreshToken String?
   expiredAt BigInt?
+}
+
+model Warehouse {
+  id String @id @default(cuid())
+  code String @unique
+  address String
+  transaction InventoryTransaction[]
+  balance InventoryBalance[]
+}
+
+model Product {
+  id String @id @default(cuid())
+  sku String @unique
+  name String
+  price Price[]
+  transaction InventoryTransaction[]
+  balance InventoryBalance[]
+}
+
+model Price {
+  id String @id @default(cuid())
+  amount Decimal
+  validFrom DateTime @default(now())
+  validTo DateTime?
+  product Product @relation(fields: [productId], references: [id])
+  productId String
+}
+
+model InventoryDocument {
+  id String @id @default(cuid())
+  type Type @default(SALE)
+  status Status @default(DRAFT)
+  createdAt DateTime @default(now())
+  transaction InventoryTransaction[]
+}
+
+model InventoryTransaction {
+  id String @id @default(cuid())
+  quantity Int
+  price Decimal
+  document InventoryDocument @relation(fields: [documentId], references: [id])
+  documentId String
+  product Product @relation(fields: [productId], references: [id])
+  productId String
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  warehouseId String
+}
+
+model InventoryBalance {
+  id String @id @default(cuid())
+  quantity Int
+  product Product @relation(fields: [productId], references: [id])
+  productId String @unique
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  warehouseId String @unique
 }

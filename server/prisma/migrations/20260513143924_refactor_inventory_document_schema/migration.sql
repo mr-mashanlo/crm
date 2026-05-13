@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "InventoryDocument" ALTER COLUMN "createdAt" SET DEFAULT CURRENT_TIMESTAMP;
