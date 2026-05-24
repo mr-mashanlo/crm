@@ -4,37 +4,34 @@ export class WarehouseRepository {
     this.prisma = prisma;
   };
 
-  count = async where => {
-    return await this.prisma.warehouse.count( { where } );
+  count = async ( where, tx = this.prisma ) => {
+    return await tx.warehouse.count( { where } );
   };
 
-  create = async data => {
-    return await this.prisma.warehouse.create( { data } );
+  create = async ( data, tx = this.prisma ) => {
+    return await tx.warehouse.create( { data } );
   };
 
-  delete = async where => {
-    return await this.prisma.warehouse.delete( { where } );
+  delete = async ( where, tx = this.prisma ) => {
+    return await tx.warehouse.delete( { where } );
   };
 
-  find = async ( { filters, sort, pagination } ) => {
-    return await this.prisma.warehouse.findMany( {
+  find = async ( { filters = {}, sort = { 'id': 'desc' }, pagination = { skip: 0, limit: 10 }, include = {} }, tx = this.prisma ) => {
+    return await tx.warehouse.findMany( {
       where: filters,
       orderBy: sort,
       take: pagination.limit,
-      skip: pagination.skip
+      skip: pagination.skip,
+      include
     } );
   };
 
-  findOne = async where => {
-    return await this.prisma.warehouse.findFirst( { where } );
+  findById = async ( id, tx = this.prisma ) => {
+    return await tx.warehouse.findUnique( { where: { id } } );
   };
 
-  findById = async id => {
-    return await this.prisma.warehouse.findUnique( { where: { id } } );
-  };
-
-  update = async ( where, data ) => {
-    return await this.prisma.warehouse.update( { where, data } );
+  update = async ( where, data, tx = this.prisma ) => {
+    return await tx.warehouse.update( { where, data } );
   };
 
 }

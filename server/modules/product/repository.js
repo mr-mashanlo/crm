@@ -4,37 +4,34 @@ export class ProductRepository {
     this.prisma = prisma;
   };
 
-  count = async where => {
-    return await this.prisma.product.count( { where } );
+  count = async ( where, tx = this.prisma ) => {
+    return await tx.product.count( { where } );
   };
 
-  create = async data => {
-    return await this.prisma.product.create( { data } );
+  create = async ( data, tx = this.prisma ) => {
+    return await tx.product.create( { data } );
   };
 
-  delete = async where => {
-    return await this.prisma.product.delete( { where } );
+  delete = async ( where, tx = this.prisma ) => {
+    return await tx.product.delete( { where } );
   };
 
-  find = async ( { filters, sort, pagination } ) => {
-    return await this.prisma.product.findMany( {
+  find = async ( { filters = {}, sort = { 'id': 'desc' }, pagination = { skip: 0, limit: 10 }, include = {} }, tx = this.prisma ) => {
+    return await tx.product.findMany( {
       where: filters,
       orderBy: sort,
       take: pagination.limit,
-      skip: pagination.skip
+      skip: pagination.skip,
+      include
     } );
   };
 
-  findOne = async where => {
-    return await this.prisma.product.findFirst( { where } );
+  findById = async ( id, tx = this.prisma ) => {
+    return await tx.product.findUnique( { where: { id } } );
   };
 
-  findById = async id => {
-    return await this.prisma.product.findUnique( { where: { id } } );
-  };
-
-  update = async ( where, data ) => {
-    return await this.prisma.product.update( { where, data } );
+  update = async ( where, data, tx = this.prisma ) => {
+    return await tx.product.update( { where, data } );
   };
 
 }
