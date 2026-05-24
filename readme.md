@@ -20,7 +20,7 @@ docker exec -it node npx prisma migrate dev --name init
 docker compose down -v
 ```
 
-### Start Application
+### Usefull commands
 ```bash
 # Log service
 docker logs node -f
