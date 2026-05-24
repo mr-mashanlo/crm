@@ -17,8 +17,7 @@ enum Type {
   RECEIPT
   SALE
   TRANSFER
-  WRITEOFF
-  INVENTORY_CHECK
+  WRITE_OFF
 }
 
 enum Status {
@@ -40,17 +39,19 @@ model Warehouse {
   id String @id @default(cuid())
   code String @unique
   address String
-  transaction InventoryTransaction[]
-  balance InventoryBalance[]
+  lines InventoryDocumentLine[]
+  transactions InventoryTransaction[]
+  balances InventoryBalance[]
 }
 
 model Product {
   id String @id @default(cuid())
   sku String @unique
   name String
-  price Price[]
-  transaction InventoryTransaction[]
-  balance InventoryBalance[]
+  prices Price[]
+  lines InventoryDocumentLine[]
+  transactions InventoryTransaction[]
+  balances InventoryBalance[]
 }
 
 model Price {
@@ -67,7 +68,20 @@ model InventoryDocument {
   type Type @default(SALE)
   status Status @default(DRAFT)
   createdAt DateTime @default(now())
-  transaction InventoryTransaction[]
+  lines InventoryDocumentLine[]
+  transactions InventoryTransaction[]
+}
+
+model InventoryDocumentLine {
+  id String @id @default(cuid())
+  quantity Int
+  price Decimal
+  document InventoryDocument @relation(fields: [documentId], references: [id])
+  documentId String
+  product Product @relation(fields: [productId], references: [id])
+  productId String
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  warehouseId String
 }
 
 model InventoryTransaction {
