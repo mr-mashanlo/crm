@@ -4,28 +4,28 @@ export class UserRepository {
     this.prisma = prisma;
   };
 
-  create = async data => {
-    return await this.prisma.user.create( { data } );
+  create = async ( data, tx = this.prisma ) => {
+    return await tx.user.create( { data } );
   };
 
-  find = async () => {
-    return await this.prisma.user.findMany();
+  find = async ( tx = this.prisma ) => {
+    return await tx.user.findMany();
   };
 
-  findById = async id => {
-    return await this.prisma.user.findUnique( { where: { id } } );
+  findById = async ( id, tx = this.prisma ) => {
+    return await tx.user.findUnique( { where: { id } } );
   };
 
-  findByEmail = async email => {
-    return await this.prisma.user.findUnique( { where: { email } } );
+  findByEmail = async ( email, tx = this.prisma ) => {
+    return await tx.user.findUnique( { where: { email } } );
   };
 
-  findByToken = async refreshToken => {
-    return await this.prisma.user.findFirst( { where: { refreshToken } } );
+  findByToken = async ( refreshToken, tx = this.prisma ) => {
+    return await tx.user.findFirst( { where: { refreshToken } } );
   };
 
-  update = async ( where, data ) => {
-    return await this.prisma.user.update( { where, data } );
+  update = async ( where, data, tx = this.prisma ) => {
+    return await tx.user.update( { where, data } );
   };
 
 }

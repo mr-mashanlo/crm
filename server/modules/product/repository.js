@@ -16,18 +16,27 @@ export class ProductRepository {
     return await tx.product.delete( { where } );
   };
 
-  find = async ( { filters = {}, sort = { 'id': 'desc' }, pagination = { skip: 0, limit: 10 }, include = {} }, tx = this.prisma ) => {
+  find = async ( { filters = {}, sort = { 'id': 'desc' }, pagination = { skip: 0, limit: 10 } }, tx = this.prisma ) => {
     return await tx.product.findMany( {
       where: filters,
       orderBy: sort,
       take: pagination.limit,
       skip: pagination.skip,
-      include
+      include: {
+        balances: true,
+        prices: { take: 1, orderBy: { 'id': 'desc' } }
+      }
     } );
   };
 
   findById = async ( id, tx = this.prisma ) => {
-    return await tx.product.findUnique( { where: { id } } );
+    return await tx.product.findUnique( {
+      where: { id },
+      include: {
+        balances: true,
+        prices: { take: 1, orderBy: { 'id': 'desc' } }
+      }
+    } );
   };
 
   update = async ( where, data, tx = this.prisma ) => {

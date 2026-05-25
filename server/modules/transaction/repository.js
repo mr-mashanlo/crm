@@ -16,13 +16,12 @@ export class TransactionRepository {
     return await tx.inventoryTransaction.deleteMany( { where } );
   };
 
-  find = async ( { filters = {}, sort = { 'id': 'desc' }, pagination = { skip: 0, limit: 10 }, include = {} }, tx = this.prisma ) => {
+  find = async ( { filters = {}, sort = { 'id': 'desc' }, pagination = { skip: 0, limit: 10 } }, tx = this.prisma ) => {
     return await tx.inventoryTransaction.findMany( {
       where: filters,
       orderBy: sort,
       take: pagination.limit,
-      skip: pagination.skip,
-      include
+      skip: pagination.skip
     } );
   };
 
