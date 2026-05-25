@@ -54,6 +54,20 @@ services:
       server:
         condition: service_started
 
+  client:
+    build:
+      context: ./client
+      dockerfile: dockerfile
+    container_name: react
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/usr/src/app
+    depends_on:
+      server:
+        condition: service_started
+    restart: unless-stopped
+
 networks:
   prisma-network:
 
